@@ -4,7 +4,10 @@
 
 @section('content')
     <div class="card p-3">
-        <h2 class="card-header">Comics List</h2>
+        <div class="card-header d-flex justify-content-between">
+            <h2>Comics List</h2>
+            <a class="btn btn-success" href="{{ route('comics.create') }}">New Comic</a>
+        </div>
         <div class="card-body">
             <table class="table">
                 <thead>
@@ -31,10 +34,8 @@
                             <a class="btn btn-danger" href="#">Delete</a>
                         </td>
                     </tr>
-                        
-                    
                     @empty
-                    <tr><td colspan="4" class="text-center">No comics were found</td></tr>
+                    <tr><td colspan="6" class="text-center">No comics were found</td></tr>
                     @endforelse
 
                 </tbody>

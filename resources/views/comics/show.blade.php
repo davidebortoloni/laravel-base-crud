@@ -4,7 +4,10 @@
 
 @section('content')
     <div class="card p-3">
-        <h2 class="card-header">{{ $comic->title }} ({{ $comic->type }})</h2>
+        <div class="card-header d-flex justify-content-between">
+            <h2>{{ $comic->title }} ({{ $comic->type }})</h2>
+            <a class="btn btn-outline-secondary" href="{{ route('comics.index') }}">Come back</a>
+        </div>
         <div class="card-body row">
             <div class="col-2">
                 <img src="{{ $comic->thumb }}" alt="{{ $comic->title }}" class="w-100">
