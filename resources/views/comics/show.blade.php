@@ -6,7 +6,10 @@
     <div class="card p-3">
         <div class="card-header d-flex justify-content-between">
             <h2>{{ $comic->title }} ({{ $comic->type }})</h2>
-            <a class="btn btn-outline-secondary" href="{{ route('comics.index') }}">Come back</a>
+            <div>
+                <a class="btn btn-success" href="{{ route('comics.edit', $comic->id) }}">Edit</a>
+                <a class="btn btn-outline-secondary" href="{{ url()->previous() }}">Come back</a>
+            </div>
         </div>
         <div class="card-body row">
             <div class="col-2">
