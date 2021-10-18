@@ -7,7 +7,12 @@
         <div class="card-header d-flex justify-content-between">
             <h2>{{ $comic->title }} ({{ $comic->type }})</h2>
             <div>
-                <a class="btn btn-success" href="{{ route('comics.edit', $comic->id) }}">Edit</a>
+                <a class="btn btn-warning" href="{{ route('comics.edit', $comic->id) }}">Edit</a>
+                <form class="d-inline delete-form" method="POST" action="{{ route('comics.destroy', $comic->id) }}" data-title="{{ $comic->title }}">
+                    @method('DELETE')
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
                 <a class="btn btn-outline-secondary" href="{{ url()->previous() }}">Come back</a>
             </div>
         </div>
@@ -24,4 +29,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('js/delete_confirmation.js') }}"></script>
 @endsection

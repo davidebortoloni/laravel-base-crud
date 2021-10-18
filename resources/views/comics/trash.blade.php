@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', ' | List')
+@section('title', ' | Trash')
 
 @section('content')
     <div class="card p-3">
@@ -10,7 +10,7 @@
             </div>
         @endif
         <div class="card-header d-flex justify-content-between">
-            <h2>Comics List</h2>
+            <h2>Trash</h2>
             <a class="btn btn-success" href="{{ route('comics.create') }}">New Comic</a>
         </div>
         <div class="card-body">
@@ -34,10 +34,15 @@
                         <td>
                             <a class="btn btn-primary" href="{{ route('comics.show', $comic->id) }}">Details</a>
                             <a class="btn btn-warning" href="{{ route('comics.edit', $comic->id) }}">Edit</a>
+                            <form class="d-inline restore-form" method="POST" action="{{ route('comics.restore', $comic->id) }}" data-title="{{ $comic->title }}">
+                                @method('PATCH')
+                                @csrf
+                                <button type="submit" class="btn btn-secondary">Restore</button>
+                            </form>
                             <form class="d-inline delete-form" method="POST" action="{{ route('comics.destroy', $comic->id) }}" data-title="{{ $comic->title }}">
                                 @method('DELETE')
                                 @csrf
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="submit" class="btn btn-danger">Permanently delete</button>
                             </form>
                         </td>
                     </tr>
@@ -53,4 +58,5 @@
 
 @section('scripts')
     <script src="{{ asset('js/delete_confirmation.js') }}"></script>
+    <script src="{{ asset('js/restore_confirmation.js') }}"></script>
 @endsection

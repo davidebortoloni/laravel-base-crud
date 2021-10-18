@@ -18,6 +18,12 @@ class ComicController extends Controller
         return view('comics.index', compact('comics'));
     }
 
+    public function trash()
+    {
+        $comics = Comic::onlyTrashed()->get();
+        return view('comics.trash', compact('comics'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -25,7 +31,8 @@ class ComicController extends Controller
      */
     public function create()
     {
-        return view('comics.create');
+        $comic = new Comic();
+        return view('comics.create', compact('comic'));
     }
 
     /**
@@ -37,13 +44,7 @@ class ComicController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-
-        // $comic = new Comic();
-        // $comic->fill($data);
-        // $comic->save();
-
         $comic = Comic::create($data);
-
         return redirect()->route('comics.show', $comic);
     }
 
@@ -53,9 +54,15 @@ class ComicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Comic $comic)
+    public function show($id)
     {
-        return view('comics.show', compact('comic'));
+        $comic = Comic::find($id);
+        if ($comic) {
+            return view('comics.show', compact('comic'));
+        } else {
+            $comic = Comic::withTrashed()->findOrFail($id);
+            return view('comics.show', compact('comic'));
+        }
     }
 
     /**
@@ -64,9 +71,15 @@ class ComicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Comic $comic)
+    public function edit($id)
     {
-        return view('comics.edit', compact('comic'));
+        $comic = Comic::find($id);
+        if ($comic) {
+            return view('comics.edit', compact('comic'));
+        } else {
+            $comic = Comic::withTrashed()->findOrFail($id);
+            return view('comics.edit', compact('comic'));
+        }
     }
 
     /**
@@ -76,12 +89,14 @@ class ComicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comic $comic)
+    public function update(Request $request, $id)
     {
         $data = $request->all();
-
+        $comic = Comic::find($id);
+        if (!$comic) {
+            $comic = Comic::withTrashed()->findOrFail($id);
+        }
         $comic->update($data);
-
         return redirect()->route('comics.show', $comic);
     }
 
@@ -93,6 +108,21 @@ class ComicController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comic = Comic::find($id);
+        if ($comic) {
+            $comic->delete();
+            return redirect()->route('comics.index')->with('alert', "$comic->title successfully deleted")->with('alert_type', 'danger');
+        } else {
+            $comic = Comic::withTrashed()->findOrFail($id);
+            $comic->forceDelete();
+            return redirect()->route('comics.trash')->with('alert', "$comic->title successfully deleted permanently")->with('alert_type', 'danger');
+        }
+    }
+
+    public function restore($id)
+    {
+        $comic = Comic::withTrashed()->find($id);
+        $comic->restore();
+        return redirect()->route('comics.index')->with('alert', "$comic->title successfully restored")->with('alert_type', 'success');
     }
 }

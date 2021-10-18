@@ -18,6 +18,9 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('comics.create') ? 'active' : '' }}" href="{{ request()->routeIs('comics.create') ? '#' : route('comics.create') }}">New Comic</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('comics.trash') ? 'active' : '' }}" href="{{ request()->routeIs('comics.trash') ? '#' : route('comics.trash') }}">Trash</a>
+                    </li>
                 </ul>
             </div>
         </div>
