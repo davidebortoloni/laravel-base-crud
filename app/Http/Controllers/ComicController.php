@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comic;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ComicController extends Controller
 {
@@ -43,6 +44,15 @@ class ComicController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => 'required|string|unique:comics|min:3',
+            'description' => 'required|string|min:10',
+            'price' => 'required|numeric|min:0',
+            'sale_date' => 'required|date',
+            'series' => 'required|min:3',
+            'thumb' => 'required',
+            'type' => 'required|string|min:3'
+        ]);
         $data = $request->all();
         $comic = Comic::create($data);
         return redirect()->route('comics.show', $comic);
@@ -57,12 +67,15 @@ class ComicController extends Controller
     public function show($id)
     {
         $comic = Comic::find($id);
-        if ($comic) {
-            return view('comics.show', compact('comic'));
-        } else {
+        if (!$comic) {
             $comic = Comic::withTrashed()->findOrFail($id);
-            return view('comics.show', compact('comic'));
+            $alert = [
+                "msg" => "Item located in the trash",
+                "type" => "danger"
+            ];
+            return view('comics.show', compact('comic', 'alert'));
         }
+        return view('comics.show', compact('comic'));
     }
 
     /**
@@ -74,12 +87,15 @@ class ComicController extends Controller
     public function edit($id)
     {
         $comic = Comic::find($id);
-        if ($comic) {
-            return view('comics.edit', compact('comic'));
-        } else {
+        if (!$comic) {
             $comic = Comic::withTrashed()->findOrFail($id);
-            return view('comics.edit', compact('comic'));
+            $alert = [
+                "msg" => "Item located in the trash",
+                "type" => "danger"
+            ];
+            return view('comics.edit', compact('comic', 'alert'));
         }
+        return view('comics.edit', compact('comic'));
     }
 
     /**
@@ -91,6 +107,15 @@ class ComicController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'title' => ['required', 'string', Rule::unique('comics')->ignore($id), 'min:3'],
+            'description' => 'required|string|min:10',
+            'price' => 'required|numeric|min:0',
+            'sale_date' => 'required|date',
+            'series' => 'required|min:3',
+            'thumb' => 'required',
+            'type' => 'required|string|min:3'
+        ]);
         $data = $request->all();
         $comic = Comic::find($id);
         if (!$comic) {

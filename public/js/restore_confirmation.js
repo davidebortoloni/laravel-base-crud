@@ -1,5 +1,5 @@
-const deleteForms = document.querySelectorAll(".restore-form");
-deleteForms.forEach(form => {
+const restoreForms = document.querySelectorAll(".restore-form");
+restoreForms.forEach(form => {
     // const title = form.getAttribute('data-title');
     const title = form.dataset.title;
     form.addEventListener("submit", function(e) {

@@ -4,10 +4,22 @@
 
 @section('content')
     <div class="card p-3">
+        @if (isset($alert))
+            <div class="alert alert-{{ $alert['type'] }}" role="alert">
+                {{ $alert['msg'] }}
+            </div>
+        @endif
         <div class="card-header d-flex justify-content-between">
             <h2>{{ $comic->title }} ({{ $comic->type }})</h2>
             <div>
                 <a class="btn btn-warning" href="{{ route('comics.edit', $comic->id) }}">Edit</a>
+                @if (isset($alert))
+                    <form class="d-inline restore-form" method="POST" action="{{ route('comics.restore', $comic->id) }}" data-title="{{ $comic->title }}">
+                        @method('PATCH')
+                        @csrf
+                        <button type="submit" class="btn btn-secondary">Restore</button>
+                    </form>
+                @endif
                 <form class="d-inline delete-form" method="POST" action="{{ route('comics.destroy', $comic->id) }}" data-title="{{ $comic->title }}">
                     @method('DELETE')
                     @csrf
@@ -33,4 +45,5 @@
 
 @section('scripts')
     <script src="{{ asset('js/delete_confirmation.js') }}"></script>
-@endsection
+    <script src="{{ asset('js/restore_confirmation.js') }}"></script>
+    @endsection
